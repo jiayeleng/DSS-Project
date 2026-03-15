@@ -163,7 +163,7 @@ def job_detail_page(job_id: int):
   </style>
 </head>
 <body>
-  <p class="label">DSS — Distributed Stewardship System</p>
+  <p class="label">DSS — The Department of Species Services</p>
   <h1>{job.get('title', '')}</h1>
 
   <div class="summary">{job.get('summary', job.get('short_summary', ''))}</div>
@@ -192,7 +192,7 @@ def job_detail_page(job_id: int):
   {"<section><h2>Benefits</h2><ul>" + benefits_html + "</ul></section>" if benefits_html else ""}
   {"<section><h2>References</h2><ul>" + references_html + "</ul></section>" if references_html else ""}
 
-  <span class="dss-tag">Distributed Stewardship System</span>
+  <span class="dss-tag">The Department of Species Services</span>
 </body>
 </html>"""
     return HTMLResponse(content=html)

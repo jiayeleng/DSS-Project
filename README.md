@@ -1,4 +1,4 @@
-# DSS — Distributed Stewardship System
+# DSS — The Department of Species Services
 
 An AI-led ecological job recommendation platform. A multi-agent pipeline analyses ecology news articles, collects supporting evidence from the web, and generates grounded job recommendations. Users interact through a questionnaire-style frontend; answers will be used to filter and personalise results as the job library grows.
 
