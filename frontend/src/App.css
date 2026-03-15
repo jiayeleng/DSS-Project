@@ -1,0 +1,324 @@
+/* ─── Layout ─────────────────────────────────────────────── */
+.app-wrapper {
+  width: 100%;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  transition: opacity 0.35s ease;
+}
+
+.app-wrapper.fading {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.screen {
+  width: 100%;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── Buttons ─────────────────────────────────────────────── */
+.btn {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  padding: 0.75rem 2.2rem;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.btn:hover {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-secondary {
+  border-color: var(--text-dim);
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+.btn-secondary:hover {
+  border-color: var(--text);
+  color: var(--text);
+  background: transparent;
+}
+
+.btn-option {
+  min-width: 9rem;
+  padding: 0.85rem 1.8rem;
+  font-size: 0.95rem;
+  color: var(--text-bright);
+  border-color: rgba(242, 247, 238, 0.25);
+}
+
+/* ─── Splash Screen ───────────────────────────────────────── */
+.splash-screen {
+  position: relative;
+  overflow: hidden;
+}
+
+.splash-image-wrapper {
+  position: absolute;
+  inset: 0;
+}
+
+.splash-image {
+  width: 100%;
+  height: 100%;
+  background-image: url('/splash.jpg'), none;
+  background-size: cover;
+  background-position: center;
+  background-color: #0d1a0d;
+  filter: brightness(0.45) saturate(0.6);
+}
+
+.splash-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 40%,
+    rgba(10, 12, 10, 0.85) 100%
+  );
+}
+
+.splash-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  height: 100svh;
+  padding-bottom: 10vh;
+}
+
+/* ─── Opening Screen ──────────────────────────────────────── */
+.opening-screen {
+  background: var(--bg);
+}
+
+.opening-content {
+  max-width: 820px;
+  width: 90%;
+  padding: 3rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.opening-label {
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.opening-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.opening-line {
+  font-size: 1.45rem;
+  line-height: 1.7;
+  color: var(--text);
+  opacity: 0;
+  animation: fadeLine 0.5s ease forwards;
+}
+
+@keyframes fadeLine {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Question Screen ─────────────────────────────────────── */
+.question-screen {
+  background: var(--bg);
+}
+
+.question-content {
+  max-width: 1400px;
+  width: 96%;
+  padding: 3rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  align-items: center;
+  text-align: center;
+}
+
+.question-meta {
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.question-text {
+  font-size: clamp(1.2rem, 3.8vw, 1.9rem);
+  line-height: 1.55;
+  color: var(--text-bright);
+  letter-spacing: 0.02em;
+}
+
+.options-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+/* ─── Loading Screen ──────────────────────────────────────── */
+.loading-screen {
+  background: var(--bg);
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.loading-dots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.loading-dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50%       { opacity: 1;   transform: scale(1.2); }
+}
+
+.loading-text {
+  font-size: 1.2rem;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+/* ─── Results Screen ──────────────────────────────────────── */
+.results-screen {
+  background: var(--bg);
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.results-content-wide {
+  max-width: 1500px;
+  width: 94%;
+  padding: 4rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.results-label {
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  align-self: flex-start;
+}
+
+/* Flexible card grid — fixed card width, wraps automatically, always centered */
+.jobs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 320px);
+  justify-content: center;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.job-card-v2 {
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.job-card-v2:hover {
+  border-color: var(--accent);
+}
+
+/* Placeholder image */
+.job-card-image {
+  height: 180px;
+  background-image: url('/splash.jpg');
+  background-size: cover;
+  background-color: #0d1a0d;
+  filter: brightness(0.55) saturate(0.7);
+}
+
+/* Title + summary body */
+.job-card-body {
+  flex: 1;
+  padding: 1rem 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.job-card-title {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  font-weight: normal;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+}
+
+.job-card-summary {
+  font-size: 0.82rem;
+  line-height: 1.65;
+  color: var(--text);
+}
+
+/* QR code footer */
+.job-card-footer {
+  padding: 1rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: center;
+}
+
+.no-results {
+  font-size: 1rem;
+  color: var(--text-dim);
+}

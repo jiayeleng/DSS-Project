@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+*.egg-info/
+
+# Database & pipeline output
+jobs.db
+output/
+
+# Cache
+cache/
+
+# PDF cache (temp files)
+/tmp/dss_pdf_cache/
+
+# Environment variables
+.env
+.env.local
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
