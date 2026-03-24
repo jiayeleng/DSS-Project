@@ -1,6 +1,6 @@
 # DSS — The Department of Species Services
 
-An AI-led ecological job recommendation platform. A multi-agent pipeline analyses ecology news articles, collects supporting evidence from the web, and generates grounded job recommendations. Users interact through a questionnaire-style frontend; answers will be used to filter and personalise results as the job library grows.
+An AI-led ecological job recommendation platform. A multi-agent pipeline analyses ecology news articles, collects supporting evidence from the web, and generates grounded job recommendations. Users answer 5 questions; their answers are matched against job tags to return 8 personalised results. Each job card displays a QR code linking to a full detail page hosted on Netlify.
 
 ---
 
@@ -53,13 +53,15 @@ DSS Project/
 ├── server.py        # FastAPI server — exposes /api/jobs to the frontend
 ├── db.py            # SQLite job database (jobs.db)
 ├── cache.py         # Step 1 result cache (cache/step1/)
+├── tag_jobs.py      # Tag all jobs in jobs.db using the 5-question taxonomy
+├── export_static.py # Export all jobs as static HTML files for Netlify
 ├── requirements.txt
 │
 ├── cache/           # Auto-created on first run
 │   └── step1/
 │       └── <url_hash>.json   # Cached Step 1 output per news URL
 │
-├── jobs.db          # Auto-created on first run
+├── jobs.db          # SQLite database — 288 tagged jobs included
 ├── output/          # Auto-created — plain-text logs of each pipeline run
 │
 └── frontend/        # React + Vite
@@ -132,9 +134,18 @@ python main.py "https://calmatters.org/environment/2026/01/san-diego-sues-razor-
 1. **Step 1** — Fetches and analyses the article, searches the web for supporting documents. Result is saved to `cache/step1/<hash>.json`.
 2. **Step 2** — Generates one job per collected source (typically 6–8 jobs), each grounded in evidence.
 3. **Step 3** — Quality-checks each job: removes hallucinated references, softens unsupported claims.
-4. Jobs are saved to `jobs.db` and a plain-text log is written to `output/`.
+4. Jobs are saved to `jobs.db`, automatically tagged, and a plain-text log is written to `output/`.
 
 **Repeat runs on the same URL skip Step 1** — chunks are loaded from cache and Steps 2–3 run fresh. This saves significant time and API cost.
+
+### Tagging jobs manually
+
+If you need to tag jobs that were saved without tags (e.g. from an older run):
+
+```bash
+python tag_jobs.py           # tags only untagged jobs
+python tag_jobs.py --all     # re-tags every job
+```
 
 ---
 
@@ -151,9 +162,9 @@ The server exposes:
 
 | Endpoint | Method | Description |
 |---|---|---|
-| `/api/jobs` | POST | Accepts user questionnaire answers, returns all jobs from the database |
+| `/api/jobs` | POST | Accepts user questionnaire answers, returns 8 matched jobs (random sample from best-scoring tier) |
 | `/api/jobs/{id}` | GET | Returns a single job as JSON |
-| `/jobs/{id}` | GET | Human-readable HTML job detail page (QR code target) |
+| `/jobs/{id}` | GET | Human-readable HTML job detail page (QR code target, local fallback) |
 | `/api/health` | GET | Health check |
 
 ---
@@ -177,10 +188,23 @@ Vite will print two URLs:
 
 The frontend walks users through a 5-question questionnaire, then displays job cards. Each card shows a placeholder image, a short summary, and a QR code. Scanning the QR code opens the full job detail page in the phone's browser.
 
-**To point the frontend at a different API URL**, create `frontend/.env.local`:
+**To point QR codes at the Netlify static site** (recommended — works from any network, not just LAN), create `frontend/.env.local`:
+
+```
+VITE_QR_BASE=https://gleaming-marzipan-b1cb74.netlify.app
+```
+
+**To point the frontend at a different API URL**, add to `frontend/.env.local`:
 
 ```
 VITE_API_URL=http://<your-ip>:8000
+```
+
+### Deploying job pages to Netlify
+
+```bash
+python export_static.py           # generates output/static/jobs/<id>.html
+netlify deploy --dir output/static --prod --site <your-site-id>
 ```
 
 ---
