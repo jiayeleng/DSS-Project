@@ -1,19 +1,25 @@
 import { QRCodeSVG } from 'qrcode.react';
 
-// Build the QR base URL at runtime so it uses the real network IP.
-// If VITE_API_URL is explicitly set, honour it.
-// Otherwise derive from the current hostname (works when accessed via iPad on LAN).
+// Build the QR base URL at runtime.
+// VITE_QR_BASE  — set this to a public static-hosting URL so QR codes work
+//                 without LAN access (e.g. https://your-site.netlify.app).
+//                 Run `python export_static.py` first to generate the files.
+// VITE_API_URL  — fallback: used when the page is served via a public API host.
+// Otherwise     — derive from the current hostname (LAN / local-only mode).
 function getQrBase() {
+  if (import.meta.env.VITE_QR_BASE) return import.meta.env.VITE_QR_BASE;
   if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
   const { hostname } = window.location;
   return `http://${hostname}:8000`;
 }
 const QR_BASE = getQrBase();
+// Static hosting uses  /jobs/<id>.html;  the FastAPI server uses  /jobs/<id>
+const QR_SUFFIX = import.meta.env.VITE_QR_BASE ? ".html" : "";
 
 // Vary vertical crop of the placeholder image per card
 const BG_POSITIONS = ['20%', '45%', '65%', '30%', '55%', '40%', '25%'];
 
-export default function ResultsScreen({ jobs, onRestart }) {
+export default function ResultsScreen({ jobs, onRestart, onRefresh }) {
   return (
     <div className="screen results-screen">
       <div className="results-content-wide">
@@ -41,7 +47,7 @@ export default function ResultsScreen({ jobs, onRestart }) {
                 {/* QR code */}
                 <div className="job-card-footer">
                   <QRCodeSVG
-                    value={`${QR_BASE}/jobs/${job.id}`}
+                    value={`${QR_BASE}/jobs/${job.id}${QR_SUFFIX}`}
                     size={88}
                     bgColor="transparent"
                     fgColor="#c8cfc4"
@@ -55,9 +61,14 @@ export default function ResultsScreen({ jobs, onRestart }) {
           <p className="no-results">No roles matched your profile. Try again.</p>
         )}
 
-        <button className="btn btn-secondary" onClick={onRestart}>
-          Take Assessment Again
-        </button>
+        <div className="results-actions">
+          <button className="btn btn-secondary" onClick={onRefresh}>
+            New Batch
+          </button>
+          <button className="btn btn-secondary" onClick={onRestart}>
+            Take Assessment Again
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -35,13 +35,51 @@ class UserAnswers(BaseModel):
 @app.post("/api/jobs")
 def get_jobs(answers: UserAnswers) -> list[dict]:
     """
-    Return jobs from the database.
+    Return 8 jobs using tiered random sampling.
 
-    Currently returns all jobs regardless of answers.
-    TODO: filter/rank by tags derived from `answers` once tagging is implemented.
+    Jobs are scored by how many of the user's 5 tags they match (0–5).
+    We fill the 8 slots greedily from the highest score tier downward,
+    randomising within each tier. This guarantees:
+      - highest-matching jobs are always preferred
+      - results vary on each call (refresh gives a new batch)
+      - exactly 8 jobs are returned as long as the DB has 8+ entries
     """
+    import random
+
     jobs = db.get_all_jobs()
-    return jobs
+    if not jobs:
+        return []
+
+    selected = {v for v in [
+        answers.livingSystem,
+        answers.attention,
+        answers.perception,
+        answers.function,
+        answers.approach,
+    ] if v}
+
+    if not selected:
+        return random.sample(jobs, min(8, len(jobs)))
+
+    def score(job):
+        return len(selected & set(job.get("tags") or []))
+
+    # Group jobs by score (5 → 0)
+    tiers: dict[int, list] = {}
+    for j in jobs:
+        s = score(j)
+        tiers.setdefault(s, []).append(j)
+
+    result = []
+    for s in range(5, -1, -1):
+        tier = tiers.get(s, [])
+        needed = 8 - len(result)
+        if needed <= 0:
+            break
+        picks = random.sample(tier, min(needed, len(tier)))
+        result.extend(picks)
+
+    return result
 
 
 @app.get("/api/jobs/{job_id}")
@@ -142,6 +180,7 @@ def job_detail_page(job_id: int):
       grid-template-columns: 1fr 1fr;
       gap: 0.75rem 1.5rem;
       font-size: 0.9rem;
+      margin-bottom: 2.5rem;
     }}
     .meta-item span:first-child {{
       display: block;
@@ -166,7 +205,7 @@ def job_detail_page(job_id: int):
   <p class="label">DSS — The Department of Species Services</p>
   <h1>{job.get('title', '')}</h1>
 
-  <div class="summary">{job.get('summary', job.get('short_summary', ''))}</div>
+  <div class="summary">{job.get('short_summary', '')}</div>
 
   <div class="meta-grid">
     <div class="meta-item">
@@ -190,6 +229,7 @@ def job_detail_page(job_id: int):
   {"<section><h2>Responsibilities</h2><ul>" + responsibilities_html + "</ul></section>" if responsibilities_html else ""}
   {"<section><h2>Qualifications</h2><ul>" + qualifications_html + "</ul></section>" if qualifications_html else ""}
   {"<section><h2>Benefits</h2><ul>" + benefits_html + "</ul></section>" if benefits_html else ""}
+  {"<section><h2>Summary</h2><p>" + job.get('summary', '') + "</p></section>" if job.get('summary') else ""}
   {"<section><h2>References</h2><ul>" + references_html + "</ul></section>" if references_html else ""}
 
   <span class="dss-tag">The Department of Species Services</span>

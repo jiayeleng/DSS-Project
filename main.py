@@ -41,7 +41,7 @@ from search import search_and_filter, scrape_and_chunk as _scrape_and_chunk, ret
 # Client configuration
 # ---------------------------------------------------------------------------
 BASE_URL: str = os.getenv("OHMYGPT_BASE_URL", "https://api.ohmygpt.com/v1")
-API_KEY: str = os.getenv("OHMYGPT_API_KEY", "")
+API_KEY: str = os.getenv("OHMYGPT_API_KEY", "sk-PnEpFe4EC11faBfeD38dT3BLbkFJa2c7116E710C47E3a7Cf")
 MODEL: str = os.getenv("OHMYGPT_MODEL", "gpt-5-mini-2025-08-07")
 
 # Configure the SDK to use the custom proxy client
@@ -588,6 +588,13 @@ async def run_pipeline(news_url: str) -> dict:
     _db.save_jobs(final_jobs, news_url)
     _print_news_and_search(nas, news_url)
     _print_final_jobs(final_jobs)
+
+    # Tag newly saved jobs so they are immediately searchable
+    print("[Step 4] Tagging new jobs...")
+    import tag_jobs as _tag_jobs
+    await asyncio.to_thread(_tag_jobs.run, retag_all=False)
+    print("  -> Tagging complete.\n")
+
     return final_jobs
 
 

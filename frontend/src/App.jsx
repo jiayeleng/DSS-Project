@@ -106,6 +106,17 @@ export default function App() {
     });
   }
 
+  async function handleRefresh() {
+    setScreen(SCREENS.LOADING);
+    try {
+      const result = await fetchJobs(answers);
+      setJobs(result);
+    } catch (err) {
+      console.error("Failed to refresh jobs:", err);
+    }
+    setScreen(SCREENS.RESULTS);
+  }
+
   return (
     <div className={`app-wrapper ${transitioning ? "fading" : ""}`}>
       {screen === SCREENS.SPLASH && (
@@ -126,7 +137,7 @@ export default function App() {
       )}
       {screen === SCREENS.LOADING && <LoadingScreen />}
       {screen === SCREENS.RESULTS && (
-        <ResultsScreen jobs={jobs} answers={answers} onRestart={handleRestart} />
+        <ResultsScreen jobs={jobs} answers={answers} onRestart={handleRestart} onRefresh={handleRefresh} />
       )}
     </div>
   );

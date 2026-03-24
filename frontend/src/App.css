@@ -255,6 +255,13 @@
   align-self: flex-start;
 }
 
+.results-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 /* Flexible card grid — fixed card width, wraps automatically, always centered */
 .jobs-grid {
   display: grid;
