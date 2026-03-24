@@ -6,7 +6,6 @@ __pycache__/
 *.egg-info/
 
 # Database & pipeline output
-jobs.db
 output/
 
 # Cache
