@@ -37,7 +37,7 @@ from serpapi import GoogleSearch
 # ---------------------------------------------------------------------------
 # Config
 # ---------------------------------------------------------------------------
-SERPAPI_API_KEY = "b5aac9386844457245fccb95ef4adb2d372ec3964e82d7cb3160140e084c27fe"#"8e60264049ce719c653369f63749ed932a78f534a33a914bcc2cc60651725ccf"#"98c9d1b4c1a7790ee01b26c7ba470b02920692924a0a2b0ac0109e0169ae31a1"
+SERPAPI_API_KEY = ""
 PDF_CACHE_DIR = os.path.join(tempfile.gettempdir(), "dss_pdf_cache")
 os.makedirs(PDF_CACHE_DIR, exist_ok=True)
 

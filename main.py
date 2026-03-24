@@ -41,7 +41,7 @@ from search import search_and_filter, scrape_and_chunk as _scrape_and_chunk, ret
 # Client configuration
 # ---------------------------------------------------------------------------
 BASE_URL: str = os.getenv("OHMYGPT_BASE_URL", "https://api.ohmygpt.com/v1")
-API_KEY: str = os.getenv("OHMYGPT_API_KEY", "sk-PnEpFe4EC11faBfeD38dT3BLbkFJa2c7116E710C47E3a7Cf")
+API_KEY: str = os.getenv("OHMYGPT_API_KEY", "")
 MODEL: str = os.getenv("OHMYGPT_MODEL", "gpt-5-mini-2025-08-07")
 
 # Configure the SDK to use the custom proxy client
