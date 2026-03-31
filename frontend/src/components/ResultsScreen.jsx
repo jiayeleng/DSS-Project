@@ -1,4 +1,4 @@
-import { QRCodeSVG } from 'qrcode.react';
+import { QRCodeSVG } from "qrcode.react";
 
 // Build the QR base URL at runtime.
 // VITE_QR_BASE  — set this to a public static-hosting URL so QR codes work
@@ -17,7 +17,7 @@ const QR_BASE = getQrBase();
 const QR_SUFFIX = import.meta.env.VITE_QR_BASE ? ".html" : "";
 
 // Vary vertical crop of the placeholder image per card
-const BG_POSITIONS = ['20%', '45%', '65%', '30%', '55%', '40%', '25%'];
+const BG_POSITIONS = ["20%", "45%", "65%", "30%", "55%", "40%", "25%"];
 
 export default function ResultsScreen({ jobs, onRestart, onRefresh }) {
   return (
@@ -29,11 +29,15 @@ export default function ResultsScreen({ jobs, onRestart, onRefresh }) {
           <div className="jobs-grid">
             {jobs.map((job, i) => (
               <div key={job.id} className="job-card-v2">
-
                 {/* Placeholder image */}
                 <div
                   className="job-card-image"
-                  style={{ backgroundPositionY: BG_POSITIONS[i % BG_POSITIONS.length] }}
+                  style={{
+                    backgroundImage: `url(${job.cover_image}), url("/mock-images/fallback.png")`,
+                    backgroundPosition: `center ${BG_POSITIONS[i % BG_POSITIONS.length]}`,
+                    backgroundSize: "cover",
+                    backgroundRepeat: "no-repeat",
+                  }}
                 />
 
                 {/* Short summary */}
@@ -53,12 +57,13 @@ export default function ResultsScreen({ jobs, onRestart, onRefresh }) {
                     fgColor="#c8cfc4"
                   />
                 </div>
-
               </div>
             ))}
           </div>
         ) : (
-          <p className="no-results">No roles matched your profile. Try again.</p>
+          <p className="no-results">
+            No roles matched your profile. Try again.
+          </p>
         )}
 
         <div className="results-actions">
