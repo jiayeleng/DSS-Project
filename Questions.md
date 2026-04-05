@@ -1,14 +1,24 @@
-1. Which living systems draw your attention?
-(plants / animals / environmental systems)
+1. Life Systems
+question: Which living systems draw your attention?
+frontend: (Flora / Fauna / Environmental)
+tagging: (plants / animals / environmental systems)
 
-2. Where does your attention settle?
-(land / water / air)
+2. Habitat Domain
+question: Where does your attention tend to stabilize?
+frontend: (Grounded in Soil / Moving with Tides / Carried by Air)
+tagging: (land / water / air)
 
-3. When is your perception most reliable?
-(day / night)
+3. Circadian Phase
+question: When is your perception most reliable?
+frontend: (Under Sun / Under Moon)
+tagging: (day / night)
 
-4. Where do you function most effectively?
-(indoor / field work)
+4. Operational Setting
+question: Where do you maintain optimal function?
+frontend: (Within Shelter / In Open Field)
+tagging: (indoor / field work)
 
-5. How do you approach other species?
-(observe / help / touch)
+5. Interaction Mode
+question: How do you approach other species?
+frontend: (Witness / Assist / Direct Contact)
+tagging: (observe / help / touch)

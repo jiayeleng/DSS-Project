@@ -1,10 +1,10 @@
 /**
  * @param {Object} answers - User's answers to the 5 questions
- * @param {string} answers.livingSystem  - "Flora" | "Fauna" | "Atmosphere"
- * @param {string} answers.attention     - "Ground" | "Current" | "Drift"
- * @param {string} answers.perception    - "Under Sun" | "Under Moon"
- * @param {string} answers.function      - "Shelter" | "Exposure"
- * @param {string} answers.approach      - "Witness" | "Assist" | "Contact"
+ * @param {string} answers.lifeSystems        - "plants" | "animals" | "environmental systems"
+ * @param {string} answers.habitatDomain      - "land" | "water" | "air"
+ * @param {string} answers.circadianPhase     - "day" | "night"
+ * @param {string} answers.operationalSetting - "indoor" | "field work"
+ * @param {string} answers.interactionMode    - "observe" | "help" | "touch"
  * @returns {Promise<Array>} Array of job objects from the database
  */
 

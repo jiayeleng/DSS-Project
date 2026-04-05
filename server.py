@@ -25,61 +25,61 @@ db.init_db()
 
 
 class UserAnswers(BaseModel):
-    livingSystem: str = ""   # Flora / Fauna / Atmosphere
-    attention:    str = ""   # Ground / Current / Drift
-    perception:   str = ""   # Under Sun / Under Moon
-    function:     str = ""   # Shelter / Exposure
-    approach:     str = ""   # Witness / Assist / Contact
+    lifeSystems:        str = ""   # plants / animals / environmental systems
+    habitatDomain:      str = ""   # land / water / air
+    circadianPhase:     str = ""   # day / night
+    operationalSetting: str = ""   # indoor / field work
+    interactionMode:    str = ""   # observe / help / touch
 
 
 @app.post("/api/jobs")
 def get_jobs(answers: UserAnswers) -> list[dict]:
     """
-    Return 8 jobs using tiered random sampling.
+    Return a ranked list of jobs (not just one random batch).
 
-    Jobs are scored by how many of the user's 5 tags they match (0–5).
-    We fill the 8 slots greedily from the highest score tier downward,
-    randomising within each tier. This guarantees:
-      - highest-matching jobs are always preferred
-      - results vary on each call (refresh gives a new batch)
-      - exactly 8 jobs are returned as long as the DB has 8+ entries
+    Jobs are grouped by tag overlap score with user's selections (5 → 0),
+    then each score tier is shuffled and concatenated. Frontend paginates the
+    stable list into batches (next/previous) to avoid duplicate reshuffles.
+
+    If strict matching yields too few jobs, we still include lower-score tiers,
+    so users can keep browsing and always get additional batches.
     """
     import random
 
     jobs = db.get_all_jobs()
     if not jobs:
-        return []
+      return []
 
     selected = {v for v in [
-        answers.livingSystem,
-        answers.attention,
-        answers.perception,
-        answers.function,
-        answers.approach,
+        answers.lifeSystems,
+        answers.habitatDomain,
+        answers.circadianPhase,
+        answers.operationalSetting,
+        answers.interactionMode,
     ] if v}
 
     if not selected:
-        return random.sample(jobs, min(8, len(jobs)))
+        random.shuffle(jobs)
+        return jobs
 
     def score(job):
         return len(selected & set(job.get("tags") or []))
 
-    # Group jobs by score (5 → 0)
+    # Group jobs by score (5 → 0), shuffle inside each tier for diversity.
     tiers: dict[int, list] = {}
     for j in jobs:
         s = score(j)
         tiers.setdefault(s, []).append(j)
 
-    result = []
+    ranked = []
     for s in range(5, -1, -1):
         tier = tiers.get(s, [])
-        needed = 8 - len(result)
-        if needed <= 0:
-            break
-        picks = random.sample(tier, min(needed, len(tier)))
-        result.extend(picks)
+        if not tier:
+            continue
+        random.shuffle(tier)
+        ranked.extend(tier)
 
-    return result
+    return ranked
 
 
 @app.get("/api/jobs/{job_id}")
@@ -229,7 +229,7 @@ def job_detail_page(job_id: int):
   {"<section><h2>Responsibilities</h2><ul>" + responsibilities_html + "</ul></section>" if responsibilities_html else ""}
   {"<section><h2>Qualifications</h2><ul>" + qualifications_html + "</ul></section>" if qualifications_html else ""}
   {"<section><h2>Benefits</h2><ul>" + benefits_html + "</ul></section>" if benefits_html else ""}
-  {"<section><h2>Summary</h2><p>" + job.get('summary', '') + "</p></section>" if job.get('summary') else ""}
+  {"<section><h2>Ecological Context & System Conditions</h2><p>" + job.get('summary', '') + "</p></section>" if job.get('summary') else ""}
   {"<section><h2>References</h2><ul>" + references_html + "</ul></section>" if references_html else ""}
 
   <span class="dss-tag">The Department of Species Services</span>

@@ -160,7 +160,7 @@ def render_job_html(job: dict) -> str:
   {"<section><h2>Responsibilities</h2><ul>" + responsibilities_html + "</ul></section>" if responsibilities_html else ""}
   {"<section><h2>Qualifications</h2><ul>" + qualifications_html + "</ul></section>" if qualifications_html else ""}
   {"<section><h2>Benefits</h2><ul>" + benefits_html + "</ul></section>" if benefits_html else ""}
-  {"<section><h2>Summary</h2><p>" + job.get('summary', '') + "</p></section>" if job.get('summary') else ""}
+  {"<section><h2>Ecological Context & System Conditions</h2><p>" + job.get('summary', '') + "</p></section>" if job.get('summary') else ""}
   {"<section><h2>References</h2><ul>" + references_html + "</ul></section>" if references_html else ""}
 
   <span class="dss-tag">The Department of Species Services</span>

@@ -7,11 +7,11 @@ export default function QuestionScreen({ question, options, onAnswer, questionNu
         <div className="options-row">
           {options.map((option) => (
             <button
-              key={option}
+              key={option.value}
               className="btn btn-option"
-              onClick={() => onAnswer(option)}
+              onClick={() => onAnswer(option.value)}
             >
-              {option}
+              {option.label}
             </button>
           ))}
         </div>
