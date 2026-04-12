@@ -75,7 +75,8 @@ export default function App() {
     setAnswers(newAnswers);
 
     if (questionIndex < QUESTIONS.length - 1) {
-      transition(() => setQuestionIndex((i) => i + 1));
+      // advance directly — QuestionScreen handles its own content fade via key remount
+      setQuestionIndex((i) => i + 1);
     } else {
       setTransitioning(true);
       setTimeout(async () => {
@@ -106,16 +107,6 @@ export default function App() {
     });
   }
 
-  async function handleRefresh() {
-    setScreen(SCREENS.LOADING);
-    try {
-      const result = await fetchJobs(answers);
-      setJobs(result);
-    } catch (err) {
-      console.error("Failed to refresh jobs:", err);
-    }
-    setScreen(SCREENS.RESULTS);
-  }
 
   return (
     <div className={`app-wrapper ${transitioning ? "fading" : ""}`}>
@@ -123,21 +114,20 @@ export default function App() {
         <SplashScreen onStart={handleStart} />
       )}
       {screen === SCREENS.OPENING && (
-        <OpeningScreen onNext={handleOpeningNext} />
+        <OpeningScreen onNext={handleOpeningNext} onHome={handleRestart} />
       )}
       {screen === SCREENS.QUESTION && (
         <QuestionScreen
           key={questionIndex}
-          questionNumber={questionIndex + 1}
-          totalQuestions={QUESTIONS.length}
           question={QUESTIONS[questionIndex].question}
           options={QUESTIONS[questionIndex].options}
           onAnswer={handleAnswer}
+          onHome={handleRestart}
         />
       )}
       {screen === SCREENS.LOADING && <LoadingScreen />}
       {screen === SCREENS.RESULTS && (
-        <ResultsScreen jobs={jobs} answers={answers} onRestart={handleRestart} onRefresh={handleRefresh} />
+        <ResultsScreen jobs={jobs} onRestart={handleRestart} onHome={handleRestart} />
       )}
     </div>
   );

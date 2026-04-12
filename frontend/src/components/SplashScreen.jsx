@@ -1,3 +1,5 @@
+import NextButton from "./NextButton";
+
 export default function SplashScreen({ onStart }) {
   return (
     <div className="screen splash-screen">
@@ -14,10 +16,8 @@ export default function SplashScreen({ onStart }) {
         </video>
         <div className="splash-overlay" />
       </div>
-      <div className="splash-content">
-        <button className="btn btn-primary" onClick={onStart}>
-          Start
-        </button>
+      <div className="screen-next">
+        <NextButton onClick={onStart} />
       </div>
     </div>
   );
