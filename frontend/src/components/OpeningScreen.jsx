@@ -1,28 +1,47 @@
-const lines = [
-  "Every organism occupies a position within a living system.",
-  "Some stabilize.",
-  "Some observe.",
-  "Some intervene.",
-  "This assessment will estimate where your presence creates the least disturbance.",
-  "Respond quickly.",
-  "Alignment is often instinctive.",
-];
+import { useState } from "react";
+import NextButton from "./NextButton";
+import ManifestationScene from "./ManifestationScene";
+import PoemScene from "./PoemScene";
+import SceneBackground from "./SceneBackground";
+import HomeButton from "./HomeButton";
 
-export default function OpeningScreen({ onNext }) {
+const SCENES = [ManifestationScene, PoemScene];
+
+export default function OpeningScreen({ onNext, onHome }) {
+  const [scene, setScene] = useState(0);
+
+  function handleNext() {
+    if (scene < SCENES.length - 1) {
+      setScene((s) => s + 1);
+    } else {
+      onNext();
+    }
+  }
+
   return (
     <div className="screen opening-screen">
-      <div className="opening-content">
-        <p className="opening-label">Opening</p>
-        <div className="opening-lines">
-          {lines.map((line, i) => (
-            <p key={i} className="opening-line" style={{ animationDelay: `${i * 0.18}s` }}>
-              {line}
-            </p>
-          ))}
-        </div>
-        <button className="btn btn-primary" onClick={onNext}>
-          Next
-        </button>
+      {/* background layers — stay mounted throughout all scenes */}
+      <div className="opening-bg" />
+      <SceneBackground />
+
+      {/* persistent HUD */}
+      <HomeButton onClick={onHome} />
+      <div className="q-hud q-hud--tr">
+        <span className="q-hud-label">DSS</span>
+        <span className="q-hud-dot" />
+      </div>
+
+      {/* one scene visible at a time via explicit conditional */}
+      {SCENES.map((Scene, i) =>
+        i === scene ? (
+          <div className="opening-scene" key={i}>
+            <Scene />
+          </div>
+        ) : null
+      )}
+
+      <div className="screen-next" key={scene}>
+        <NextButton onClick={handleNext} />
       </div>
     </div>
   );
