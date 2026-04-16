@@ -6,6 +6,8 @@ export default function QuestionScreen({
   options,
   onAnswer,
   onHome,
+  questionNumber,
+  totalQuestions,
 }) {
   return (
     <div className="screen question-screen">

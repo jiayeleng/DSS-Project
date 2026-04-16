@@ -161,6 +161,8 @@ export default function App() {
           options={QUESTIONS[questionIndex].options}
           onAnswer={handleAnswer}
           onHome={handleRestart}
+          questionNumber={questionIndex + 1}
+          totalQuestions={QUESTIONS.length}
         />
       )}
       {screen === SCREENS.LOADING && <LoadingScreen />}

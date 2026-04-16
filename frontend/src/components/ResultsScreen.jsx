@@ -26,6 +26,7 @@ const BG_POSITIONS = ['20%', '45%', '65%', '30%', '55%', '40%', '25%'];
 export default function ResultsScreen({
   jobs,
   onRestart,
+  onHome,
   onNextBatch,
   onPreviousBatch,
   batchIndex,
