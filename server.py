@@ -5,9 +5,11 @@ Run:
     uvicorn server:app --reload --port 8000
 """
 
+from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 import db
@@ -22,6 +24,14 @@ app.add_middleware(
 )
 
 db.init_db()
+
+_images_dir = Path(__file__).parent / "frontend" / "public" / "images"
+if _images_dir.exists():
+    app.mount("/images", StaticFiles(directory=str(_images_dir)), name="images")
+
+_assets_dir = Path(__file__).parent / "frontend" / "public" / "assets"
+if _assets_dir.exists():
+    app.mount("/assets", StaticFiles(directory=str(_assets_dir)), name="assets")
 
 
 class UserAnswers(BaseModel):
@@ -191,6 +201,31 @@ def job_detail_page(job_id: int):
       margin-bottom: 0.15rem;
     }}
     a {{ color: #7aab6e; word-break: break-all; }}
+    .job-img-wrap {{
+      position: relative;
+      width: 100%;
+      height: 500px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      border-radius: 0.5rem;
+      filter: grayscale(100%);
+    }}
+    .job-img-wrap img {{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }}
+    .job-img-wrap::after {{
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("/assets/path-overlay-01.png");
+      background-size: cover;
+      background-position: center;
+      mix-blend-mode: screen;
+      opacity: 0.6;
+    }}
     .dss-tag {{
       display: inline-block;
       margin-top: 2.5rem;
@@ -204,6 +239,10 @@ def job_detail_page(job_id: int):
 <body>
   <p class="label">DSS — The Department of Species Services</p>
   <h1>{job.get('title', '')}</h1>
+
+  <div class="job-img-wrap" id="job-img-wrap">
+    <img src="/images/{job_id}.png" alt="{job.get('title', '')}" onerror="document.getElementById('job-img-wrap').style.display='none'" />
+  </div>
 
   <div class="summary">{job.get('short_summary', '')}</div>
 

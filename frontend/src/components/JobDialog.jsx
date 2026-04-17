@@ -1,5 +1,11 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { QRCodeSVG } from "qrcode.react";
+
+const OVERLAYS = Array.from({ length: 35 }, (_, i) => {
+  const n = String(i + 1).padStart(2, "0");
+  return `url("/assets/path-overlay-${n}.png")`;
+});
+const DOT_OVERLAYS = [1, 2, 3].map((n) => `url("/assets/dot-pattern-0${n}.gif")`);
 
 function getQrBase() {
   if (import.meta.env.VITE_QR_BASE) return import.meta.env.VITE_QR_BASE;
@@ -21,6 +27,8 @@ const NAV = [
 export default function JobDialog({ job, onClose }) {
   const [active, setActive] = useState("about");
   const bodyRef = useRef(null);
+  const overlay = useMemo(() => OVERLAYS[Math.floor(Math.random() * OVERLAYS.length)], [job.id]);
+  const dotOverlay = useMemo(() => DOT_OVERLAYS[Math.floor(Math.random() * DOT_OVERLAYS.length)], [job.id]);
 
   useEffect(() => {
     function onKey(e) { if (e.key === "Escape") onClose(); }
@@ -95,12 +103,14 @@ export default function JobDialog({ job, onClose }) {
             </div>
 
             {/* Cover image */}
-            {job.cover_image && (
-              <div
-                className="jd-cover"
-                style={{ backgroundImage: `url(${job.cover_image}), url("/mock-images/fallback.png")` }}
-              />
-            )}
+            <div
+              className="jd-cover"
+              style={{
+                backgroundImage: `url(${job.cover_image || `/images/${job.id}.png`}), url("/mock-images/fallback.png")`,
+                "--overlay": overlay,
+                "--dot-overlay": dotOverlay,
+              }}
+            />
 
             {/* About */}
             <section id="jd-about" className="jd-section">
