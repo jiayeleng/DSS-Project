@@ -138,6 +138,10 @@ export default function App() {
     });
   }
 
+  function handlePreviousQuestion() {
+    if (questionIndex > 0) setQuestionIndex((i) => i - 1);
+  }
+
   function handleNextBatch() {
     setBatchIndex((index) => Math.min(index + 1, totalBatches - 1));
   }
@@ -161,6 +165,7 @@ export default function App() {
           options={QUESTIONS[questionIndex].options}
           onAnswer={handleAnswer}
           onHome={handleRestart}
+          onBack={questionIndex > 0 ? handlePreviousQuestion : null}
           questionNumber={questionIndex + 1}
           totalQuestions={QUESTIONS.length}
         />

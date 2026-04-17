@@ -1,7 +1,8 @@
 const stanzas = [
   [
     "Every organism occupies",
-    "a position within a living system.",
+    "a position within",
+    "a living system.",
   ],
   [
     "Some stabilize.",
@@ -9,13 +10,16 @@ const stanzas = [
     "Some intervene.",
   ],
   [
-    "This assessment will estimate",
-    "where your presence creates",
-    "the least disturbance.",
+    "This assessment",
+    "will estimate",
+    "where your presence",
+    "creates the",
+    "least disturbance.",
   ],
   [
     "Respond quickly.",
-    "Alignment is often instinctive.",
+    "Alignment is often",
+    "instinctive.",
   ],
 ];
 

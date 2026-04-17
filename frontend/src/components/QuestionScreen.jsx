@@ -6,6 +6,7 @@ export default function QuestionScreen({
   options,
   onAnswer,
   onHome,
+  onBack,
   questionNumber,
   totalQuestions,
 }) {
@@ -38,10 +39,16 @@ export default function QuestionScreen({
       {/* Bottom panel */}
       <div className="q-panel">
         <div className="q-panel-inner">
-          <p className="question-meta">
-            {questionNumber} / {totalQuestions}
+          {onBack && (
+            <button className="q-back-btn" onClick={onBack}>← Back</button>
+          )}
+          <p className="q-question">
+            <span className="question-meta">
+              {questionNumber}/{totalQuestions}.
+            </span>
+            {' '}
+            {question}
           </p>
-          <p className="q-question">{question}</p>
           <div className="q-options">
             {options.map((option) => (
               <button
