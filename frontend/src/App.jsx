@@ -103,7 +103,8 @@ export default function App() {
     setAnswers(newAnswers);
 
     if (questionIndex < QUESTIONS.length - 1) {
-      transition(() => setQuestionIndex((i) => i + 1));
+      // advance directly — QuestionScreen handles its own content fade via key remount
+      setQuestionIndex((i) => i + 1);
     } else {
       setTransitioning(true);
       setTimeout(async () => {
@@ -137,6 +138,10 @@ export default function App() {
     });
   }
 
+  function handlePreviousQuestion() {
+    if (questionIndex > 0) setQuestionIndex((i) => i - 1);
+  }
+
   function handleNextBatch() {
     setBatchIndex((index) => Math.min(index + 1, totalBatches - 1));
   }
@@ -147,16 +152,22 @@ export default function App() {
 
   return (
     <div className={`app-wrapper ${transitioning ? "fading" : ""}`}>
-      {screen === SCREENS.SPLASH && <SplashScreen onStart={handleStart} />}
-      {screen === SCREENS.OPENING && <OpeningScreen onNext={handleOpeningNext} />}
+      {screen === SCREENS.SPLASH && (
+        <SplashScreen onStart={handleStart} />
+      )}
+      {screen === SCREENS.OPENING && (
+        <OpeningScreen onNext={handleOpeningNext} onHome={handleRestart} />
+      )}
       {screen === SCREENS.QUESTION && (
         <QuestionScreen
           key={questionIndex}
-          questionNumber={questionIndex + 1}
-          totalQuestions={QUESTIONS.length}
           question={QUESTIONS[questionIndex].question}
           options={QUESTIONS[questionIndex].options}
           onAnswer={handleAnswer}
+          onHome={handleRestart}
+          onBack={questionIndex > 0 ? handlePreviousQuestion : null}
+          questionNumber={questionIndex + 1}
+          totalQuestions={QUESTIONS.length}
         />
       )}
       {screen === SCREENS.LOADING && <LoadingScreen />}
@@ -164,6 +175,7 @@ export default function App() {
         <ResultsScreen
           jobs={currentBatchJobs}
           onRestart={handleRestart}
+          onHome={handleRestart}
           onNextBatch={handleNextBatch}
           onPreviousBatch={handlePreviousBatch}
           batchIndex={batchIndex}

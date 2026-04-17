@@ -13,7 +13,7 @@
   --accent: #7aab6e;
   --accent-dim: rgba(122, 171, 110, 0.12);
   --border: rgba(122, 171, 110, 0.15);
-  --font-mono: 'Courier New', Courier, monospace;
+  --font-mono: 'Kode Mono', 'Courier New', Courier, monospace;
   --font-sans: system-ui, -apple-system, sans-serif;
 }
 
